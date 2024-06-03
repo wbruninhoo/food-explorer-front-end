@@ -1,11 +1,12 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { CustomerRoutes } from './customer.routes'
+import { AuthRoutes } from './auth-routes'
+// import { CustomerRoutes } from './customer.routes'
 
 export function Routes() {
   return (
     <BrowserRouter>
-      <CustomerRoutes />
+      <AuthRoutes />
     </BrowserRouter>
   )
 }
