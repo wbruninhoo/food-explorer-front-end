@@ -1,5 +1,6 @@
 import { MagnifyingGlass, X } from '@phosphor-icons/react'
 import { createPortal } from 'react-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Footer } from '../footer'
 import { Input } from '../input'
@@ -11,6 +12,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ menuIsOpen, handleCloseMenu }: SidebarProps) {
+  const navigate = useNavigate()
+
   return createPortal(
     <Container data-menu-is-open={menuIsOpen}>
       <Header>
@@ -27,7 +30,17 @@ export function Sidebar({ menuIsOpen, handleCloseMenu }: SidebarProps) {
           <Input.Element placeholder="Busque por pratos ou ingredientes" />
         </Input.Root>
 
-        <Nav></Nav>
+        <Nav>
+          <Link to="/dishes/create">Novo prato</Link>
+          <a
+            onClick={() => {
+              handleCloseMenu()
+              navigate('/')
+            }}
+          >
+            Sair
+          </a>
+        </Nav>
       </Content>
       <Footer />
     </Container>,

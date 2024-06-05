@@ -7,7 +7,7 @@ interface Category {
   name: string
 }
 
-interface Prato {
+interface Dishe {
   id: string
   category_id: string
   category: string
@@ -32,7 +32,7 @@ export const categories: Category[] = [
   },
 ]
 
-export const pratosMock: Prato[] = [
+export const dishes: Dishe[] = [
   {
     id: '1',
     category_id: 'cat1',

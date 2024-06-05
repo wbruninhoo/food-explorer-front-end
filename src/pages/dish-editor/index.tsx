@@ -10,7 +10,7 @@ import { Header } from '@/components/header'
 import { Ingredients } from '@/components/ingredients'
 import { Input } from '@/components/input'
 import { Select } from '@/components/select'
-import { categories, pratosMock } from '@/data/pratos'
+import { categories, dishes } from '@/data/pratos'
 
 import {
   Actions,
@@ -43,7 +43,7 @@ export function DishEditor() {
 
   useEffect(() => {
     if (id) {
-      const foundDish = pratosMock.find((dish) => dish.id === id)
+      const foundDish = dishes.find((dish) => dish.id === id)
       if (foundDish) {
         setDishData(foundDish)
       }

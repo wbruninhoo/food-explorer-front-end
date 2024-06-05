@@ -1,5 +1,5 @@
 import { List, MagnifyingGlass, Receipt, SignOut } from '@phosphor-icons/react'
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 
 import { Button } from '../button'
 import { Input } from '../input'
@@ -14,7 +14,12 @@ import {
   Menu,
   SignOutButton,
 } from './styles'
-export function Header() {
+
+interface HeaderProps {
+  onSearchChange?: (event: ChangeEvent<HTMLInputElement>) => void
+}
+
+export function Header({ onSearchChange }: HeaderProps) {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
   return (
     <Container>
@@ -30,7 +35,10 @@ export function Header() {
         <InputWrapper>
           <Input.Root>
             <Input.Icon icon={MagnifyingGlass} />
-            <Input.Element placeholder="Busque por pratos ou ingredientes" />
+            <Input.Element
+              placeholder="Busque por pratos ou ingredientes"
+              onChange={onSearchChange}
+            />
           </Input.Root>
         </InputWrapper>
         <DesktopButtonWrapper>

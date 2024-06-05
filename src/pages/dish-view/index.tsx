@@ -8,7 +8,7 @@ import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { Stepper } from '@/components/stepper'
 import { Tag } from '@/components/tag'
-import { pratosMock } from '@/data/pratos'
+import { dishes } from '@/data/pratos'
 
 import {
   Actions,
@@ -24,7 +24,7 @@ import {
 
 export function DishView() {
   const { id } = useParams()
-  const foundDish = pratosMock.find((dish) => dish.id === id)
+  const foundDish = dishes.find((dish) => dish.id === id)
   const [amount, setAmount] = useState(1)
   const price = foundDish ? (foundDish.price ?? 0) * amount : 0
   const formattedPrice = price.toLocaleString('pt-BR', {
