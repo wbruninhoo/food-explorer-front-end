@@ -1,6 +1,5 @@
-import { MouseEvent, useEffect, useState } from 'react'
-
 import { Minus, Plus } from '@phosphor-icons/react'
+import { MouseEvent, useEffect, useState } from 'react'
 
 import { ActionButton, Container } from './styles'
 

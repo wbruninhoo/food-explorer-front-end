@@ -23,10 +23,10 @@ import {
 } from './styles'
 
 export function DishView() {
-  const params = useParams()
-  const prato = pratosMock.find((dish) => dish.id === params.id)
+  const { id } = useParams()
+  const foundDish = pratosMock.find((dish) => dish.id === id)
   const [amount, setAmount] = useState(1)
-  const price = prato ? (prato.price ?? 0) * amount : 0
+  const price = foundDish ? (foundDish.price ?? 0) * amount : 0
   const formattedPrice = price.toLocaleString('pt-BR', {
     currency: 'BRL',
     style: 'currency',
@@ -45,18 +45,18 @@ export function DishView() {
         <DishContainer>
           <ImageWrapper>
             <img
-              src={prato?.image_url || EmptyImg}
-              alt={prato?.name || 'Unknown Dish'}
+              src={foundDish?.image_url || EmptyImg}
+              alt={foundDish?.name || 'Unknown Dish'}
             />
           </ImageWrapper>
 
           <DishInfoWrapper>
             <DishInfo>
-              <h1>{prato?.name ?? 'Unknown Dish'}</h1>
-              <p>{prato?.description ?? 'No description available.'}</p>
+              <h1>{foundDish?.name ?? 'Unknown Dish'}</h1>
+              <p>{foundDish?.description ?? 'No description available.'}</p>
 
               <Ingredients>
-                {prato?.ingredients.map((ingredient) => (
+                {foundDish?.ingredients.map((ingredient) => (
                   <Tag key={ingredient.id} text={ingredient.name} />
                 ))}
               </Ingredients>

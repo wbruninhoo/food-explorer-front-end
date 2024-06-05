@@ -84,8 +84,8 @@ export const pratosMock: Prato[] = [
   },
   {
     id: '4',
-    category_id: 'cat2',
-    category: 'Sobremesas',
+    category_id: 'cat1',
+    category: 'Refeições',
     name: 'Hambúrguer Deluxe',
     description: 'Hambúrguer com queijo, bacon, tomate e pepino.',
     price: 14.99,

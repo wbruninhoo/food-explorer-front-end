@@ -12,7 +12,6 @@ export function NotFound() {
       <Content>
         <h1>Oops!</h1>
         <p>A página que você tentou acessar não existe.</p>
-
         <Button.Root onClick={() => navigate('/')}>
           <Button.Text text="Voltar para o início" />
         </Button.Root>
