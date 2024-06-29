@@ -5,6 +5,11 @@ export const Container = styled(Link)`
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 0.5rem;
+
+  height: 100%;
+  max-height: 1.5rem;
+  width: 100%;
 
   > img {
     height: 100%;

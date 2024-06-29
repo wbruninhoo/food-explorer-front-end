@@ -40,3 +40,30 @@ export const HeroMobile = styled.div`
     display: none;
   }
 `
+export const EmptyDishes = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  flex: 1;
+  min-height: 10rem;
+  margin-bottom: 3rem;
+
+  > img {
+    max-width: 15rem;
+    margin-bottom: 1rem;
+
+    opacity: 0.6;
+  }
+
+  > div {
+    margin-top: 1.5rem;
+  }
+
+  a {
+    color: ${({ theme }) => theme.colors.cake['200']};
+    text-decoration: underline;
+    text-transform: uppercase;
+  }
+`

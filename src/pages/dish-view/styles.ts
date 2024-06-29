@@ -128,15 +128,6 @@ export const ImageWrapper = styled.div`
   }
 `
 
-export const ImagePreview = styled.div`
-  height: max-content;
-  width: 100%;
-
-  & > * {
-    width: 100%;
-  }
-`
-
 export const Ingredients = styled.div`
   display: flex;
   flex-wrap: wrap;

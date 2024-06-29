@@ -26,11 +26,16 @@ export const Form = styled.form`
 
   > h1 {
     display: none;
-
     color: ${({ theme }) => theme.colors.light['100']};
     font-size: 2rem;
     font-weight: 500;
     line-height: 1.4;
+  }
+
+  > p {
+    color: ${({ theme }) => theme.colors.light['100']};
+    font-size: 0.75rem;
+    text-align: left;
   }
 
   @media ${({ theme }) => theme.screens.md} {

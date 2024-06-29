@@ -1,14 +1,18 @@
 import { CaretLeft, Receipt } from '@phosphor-icons/react'
-import { useState } from 'react'
+import { AxiosError } from 'axios'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import EmptyImg from '@/assets/empty.svg'
+import { DishDetails } from '@/@types/entities/dish-details'
 import { Button } from '@/components/button'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { Stepper } from '@/components/stepper'
 import { Tag } from '@/components/tag'
-import { dishes } from '@/data/pratos'
+import { useAuth } from '@/hooks/auth'
+import { useCart } from '@/hooks/cart'
+import { api } from '@/services/api'
+import { UserRoles } from '@/utils/user-roles.enum'
 
 import {
   Actions,
@@ -23,56 +27,120 @@ import {
 } from './styles'
 
 export function DishView() {
-  const { id } = useParams()
-  const foundDish = dishes.find((dish) => dish.id === id)
+  const [dish, setDish] = useState<DishDetails | null>(null)
   const [amount, setAmount] = useState(1)
-  const price = foundDish ? (foundDish.price ?? 0) * amount : 0
+  const [isLoading, setIsLoading] = useState(false)
+
+  const navigate = useNavigate()
+  const params = useParams()
+  const { user } = useAuth()
+  const { addItem } = useCart()
+
+  const dishId = params.id
+
+  const userRole = user?.role ?? UserRoles.CUSTOMER
+  const canEditDish = [UserRoles.ADMIN].includes(userRole)
+  const canAddDishToCart = [UserRoles.CUSTOMER].includes(userRole)
+
+  const loadingParentClass = isLoading ? 'loading' : ''
+  const loadingItemClass = isLoading ? 'loading-item' : ''
+
+  function handleBack() {
+    return navigate(-1)
+  }
+
+  function handleEditDish() {
+    return navigate(`/dishes/${dishId}/edit`)
+  }
+
+  function handleAddDishToCart() {
+    if (!dish) {
+      return
+    }
+
+    addItem({
+      amount,
+      dishId: dish.id,
+      imageUrl: dish.image_url,
+      name: dish.name,
+      price: dish.price,
+    })
+  }
+
+  useEffect(() => {
+    async function getDish() {
+      try {
+        setIsLoading(true)
+        const response = await api.get<{ dish: DishDetails }>(
+          `/dishes/${dishId}`,
+        )
+
+        setDish(response.data.dish)
+      } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+          return alert(error.response.data.message)
+        } else {
+          return alert('Falha ao buscar os dados do produto')
+        }
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    getDish()
+  }, [dishId])
+
+  const price = (dish?.price ?? 0) * amount
   const formattedPrice = price.toLocaleString('pt-BR', {
     currency: 'BRL',
     style: 'currency',
   })
-  const navigate = useNavigate()
-  function handleBack() {
-    return navigate(-1)
-  }
+
   return (
-    <Container>
+    <Container className={loadingParentClass}>
       <Header />
+
       <Content>
         <ReturnButton onClick={handleBack}>
           <CaretLeft /> voltar
         </ReturnButton>
+
         <DishContainer>
-          <ImageWrapper>
-            <img
-              src={foundDish?.image_url || EmptyImg}
-              alt={foundDish?.name || 'Unknown Dish'}
-            />
+          <ImageWrapper className={loadingItemClass}>
+            <img src={dish?.image_url} alt={`Foto de ${dish?.name}`} />
           </ImageWrapper>
 
           <DishInfoWrapper>
             <DishInfo>
-              <h1>{foundDish?.name ?? 'Unknown Dish'}</h1>
-              <p>{foundDish?.description ?? 'No description available.'}</p>
+              <h1 className={loadingItemClass}>{dish?.name}</h1>
+              <p className={loadingItemClass}>{dish?.description}</p>
 
-              <Ingredients>
-                {foundDish?.ingredients.map((ingredient) => (
+              <Ingredients className={loadingItemClass}>
+                {dish?.ingredients.map((ingredient) => (
                   <Tag key={ingredient.id} text={ingredient.name} />
                 ))}
               </Ingredients>
             </DishInfo>
 
-            <Actions>
-              <Stepper
-                onCountChange={(value) => {
-                  setAmount(value)
-                }}
-              />
-              <Button.Root>
-                <Button.Icon icon={Receipt} />
-                <Button.Text text={`incluir ∙ ${formattedPrice}`} />
+            {canAddDishToCart && (
+              <Actions>
+                <Stepper
+                  onCountChange={(value) => {
+                    setAmount(value)
+                  }}
+                />
+                <Button.Root disabled={isLoading} onClick={handleAddDishToCart}>
+                  <Button.Icon icon={Receipt} />
+                  <Button.Text text={`incluir ∙ ${formattedPrice}`} />
+                </Button.Root>
+              </Actions>
+            )}
+
+            {canEditDish && (
+              <Button.Root onClick={handleEditDish} disabled={isLoading}>
+                <Button.Text text="Editar prato" />
               </Button.Root>
-            </Actions>
+            )}
           </DishInfoWrapper>
         </DishContainer>
       </Content>

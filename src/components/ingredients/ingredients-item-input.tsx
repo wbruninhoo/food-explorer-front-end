@@ -3,10 +3,13 @@ import { ForwardedRef, forwardRef, InputHTMLAttributes } from 'react'
 import { Input } from './styles'
 
 function IngredientsItemInputInner(
-  { ...rest }: InputHTMLAttributes<HTMLInputElement>,
+  {
+    loading = false,
+    ...rest
+  }: InputHTMLAttributes<HTMLInputElement> & { loading?: boolean },
   ref: ForwardedRef<HTMLInputElement>,
 ) {
-  return <Input ref={ref} {...rest} />
+  return <Input ref={ref} {...rest} disabled={loading} />
 }
 
 export const IngredientsItemInput = forwardRef(IngredientsItemInputInner)

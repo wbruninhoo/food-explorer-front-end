@@ -1,5 +1,10 @@
 import { List, MagnifyingGlass, Receipt, SignOut } from '@phosphor-icons/react'
 import { ChangeEvent, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+import { useAuth } from '@/hooks/auth'
+import { useCart } from '@/hooks/cart'
+import { UserRoles } from '@/utils/user-roles.enum'
 
 import { Button } from '../button'
 import { Input } from '../input'
@@ -21,6 +26,27 @@ interface HeaderProps {
 
 export function Header({ onSearchChange }: HeaderProps) {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
+  const { cartItems } = useCart()
+  const { signOut, user } = useAuth()
+  const navigate = useNavigate()
+  const cartItemsAmount = cartItems.length
+  const userRole = user?.role ?? UserRoles.CUSTOMER
+  const canAccessCart = [UserRoles.CUSTOMER].includes(userRole)
+  const canCreateDish = [UserRoles.ADMIN].includes(userRole)
+
+  async function handleSignOut() {
+    if (!signOut) {
+      return
+    }
+
+    await signOut()
+    return navigate('/')
+  }
+
+  function navigateToCart() {
+    navigate('/cart')
+  }
+
   return (
     <Container>
       <Content>
@@ -42,15 +68,26 @@ export function Header({ onSearchChange }: HeaderProps) {
           </Input.Root>
         </InputWrapper>
         <DesktopButtonWrapper>
-          <Button.Root>
-            <Button.Icon icon={Receipt} />
-            <Button.Text text={`Pedidos (0)`} />
-          </Button.Root>
+          {canCreateDish ? (
+            <Button.Root onClick={() => navigate('/dishes/create')}>
+              <Button.Text text="Novo prato" />
+            </Button.Root>
+          ) : (
+            <Button.Root onClick={navigateToCart}>
+              <Button.Icon icon={Receipt} />
+              <Button.Text text={`Pedidos (${cartItemsAmount})`} />
+            </Button.Root>
+          )}
         </DesktopButtonWrapper>
-        <Cart>
-          <Receipt size={32} />
-        </Cart>
-        <SignOutButton>
+
+        {canAccessCart && (
+          <Cart onClick={navigateToCart}>
+            <Receipt size={32} />
+            <span>{cartItemsAmount}</span>
+          </Cart>
+        )}
+
+        <SignOutButton onClick={handleSignOut}>
           <SignOut />
         </SignOutButton>
       </Content>

@@ -2,6 +2,9 @@ import { MagnifyingGlass, X } from '@phosphor-icons/react'
 import { createPortal } from 'react-dom'
 import { Link, useNavigate } from 'react-router-dom'
 
+import { useAuth } from '@/hooks/auth'
+import { UserRoles } from '@/utils/user-roles.enum'
+
 import { Footer } from '../footer'
 import { Input } from '../input'
 import { CloseButton, Container, Content, Header, Nav } from './styles'
@@ -12,7 +15,22 @@ interface SidebarProps {
 }
 
 export function Sidebar({ menuIsOpen, handleCloseMenu }: SidebarProps) {
+  const { user, signOut } = useAuth()
+
   const navigate = useNavigate()
+
+  async function handleSignOut() {
+    if (!signOut) {
+      return
+    }
+
+    await signOut()
+    return navigate('/')
+  }
+
+  const userRole = user?.role ?? UserRoles.CUSTOMER
+
+  const canCreateNewDish = [UserRoles.ADMIN].includes(userRole)
 
   return createPortal(
     <Container data-menu-is-open={menuIsOpen}>
@@ -31,15 +49,8 @@ export function Sidebar({ menuIsOpen, handleCloseMenu }: SidebarProps) {
         </Input.Root>
 
         <Nav>
-          <Link to="/dishes/create">Novo prato</Link>
-          <a
-            onClick={() => {
-              handleCloseMenu()
-              navigate('/')
-            }}
-          >
-            Sair
-          </a>
+          {canCreateNewDish && <Link to="/dishes/create">Novo prato</Link>}
+          <a onClick={handleSignOut}>Sair</a>
         </Nav>
       </Content>
       <Footer />
